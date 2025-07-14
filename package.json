@@ -1,0 +1,14 @@
+{
+  "name": "com.sas.scene-management",
+  "version": "1.0.0",
+  "displayName": "SAS SceneManagement",
+  "unity": "2018.4",
+  "author": {
+    "name": "SAS",
+    "email": "sonkar.abhi86@gmail.com"
+  },
+  "hideInEditor": true,
+  "dependencies": {
+ 	 "com.unity.addressables": "2.4.4"
+  }
+}
