@@ -27,6 +27,7 @@ namespace SAS.SceneManagement
             bool ignoreOptional = false)
         {
             _activeSceneGroup = group;
+            EventBus<SceneGroupLoadStartEvent>.Raise(new SceneGroupLoadStartEvent { sceneGroup = group });
             var loadedScenes = new HashSet<string>();
 
             await UnloadScenes();
