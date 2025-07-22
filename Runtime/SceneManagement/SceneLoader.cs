@@ -18,6 +18,11 @@ namespace SAS.SceneManagement
         public SceneGroup sceneGroup;
     }
 
+    public struct SceneGroupLoadStartEvent : IEvent
+    {
+        public SceneGroup sceneGroup;
+    }
+
     struct AdditiveSceneLoadedEvent : IEvent
     {
         public Scene scene;
