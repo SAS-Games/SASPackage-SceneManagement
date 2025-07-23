@@ -49,6 +49,11 @@ public class SceneGroupLoader : MonoBehaviour
                 SceneUtility.MoveGameObjectToScene(gameObject, scene);
                 SceneUtility.SetActiveScene(m_SetActiveScene);
             }
+            else
+            {
+                 var scene = SceneUtility.GetScene("Bootstrapper");
+                 SceneUtility.MoveGameObjectToScene(gameObject, scene);
+            }
         }
 
         await _sceneLoader.LoadSceneGroup(m_SceneGroupName, !m_LoadOptionalScenes);
