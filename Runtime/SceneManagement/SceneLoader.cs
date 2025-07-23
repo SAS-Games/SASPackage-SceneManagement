@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 
 namespace SAS.SceneManagement
 {
-   public interface ILoadingScreen
+    public interface ILoadingScreen
     {
         void SetActive(bool active);
-        Action OnFadeInComplete{get; set;}
-        Action OnFadeOutComplete{get; set;}
+        Action OnFadeInComplete { get; set; }
+        Action OnFadeOutComplete { get; set; }
     }
 
     public struct SceneGroupLoadedEvent : IEvent
@@ -32,6 +32,7 @@ namespace SAS.SceneManagement
     {
         Task LoadSceneGroup(string groupName, bool ignoreOptional = false);
         Task LoadSceneAdditively(string sceneName, IProgress<float> progress = null);
+        SceneGroupModel SceneGroupModel { get; }
         Task UnloadScene(string name);
         event Action<float> OnProgressUpdated;
     }
@@ -41,7 +42,7 @@ namespace SAS.SceneManagement
         public event Action<float> OnProgressUpdated;
         [SerializeField] private SceneGroupsConfig m_SceneGroupsConfig;
 
-        private readonly SceneGroupModel sceneGroupModel = new SceneGroupModel();
+        public SceneGroupModel SceneGroupModel { get; } = new SceneGroupModel();
         private float _targetProgress;
 
         public async Task LoadSceneGroup(string groupName, bool ignoreOptional = false)
@@ -74,26 +75,24 @@ namespace SAS.SceneManagement
                 OnProgressUpdated?.Invoke(_targetProgress);
             };
             OnProgressUpdated?.Invoke(0f);
-            await sceneGroupModel.LoadScenes(m_SceneGroupsConfig.SceneGroups[index], progress, false, ignoreOptional);
+            await SceneGroupModel.LoadScenes(m_SceneGroupsConfig.SceneGroups[index], progress, false, ignoreOptional);
             await Task.Delay(1000);
         }
 
         public async Task LoadSceneAdditively(string sceneName, IProgress<float> progress = null)
         {
-            await sceneGroupModel.LoadSceneAdditively(sceneName, progress);
+            await SceneGroupModel.LoadSceneAdditively(sceneName, progress);
         }
 
         public async Task UnloadScenes()
         {
-            await sceneGroupModel.UnloadScenes();
+            await SceneGroupModel.UnloadScenes();
         }
 
         public async Task UnloadScene(string sceneName)
         {
-            await sceneGroupModel.UnloadScene(sceneName);
+            await SceneGroupModel.UnloadScene(sceneName);
         }
-
-        public void OnInstanceCreated() { }
     }
 
     public class LoadingProgress : IProgress<float>

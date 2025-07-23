@@ -1,6 +1,6 @@
 {
   "name": "com.sas.scene-management",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "SAS SceneManagement",
   "unity": "2018.4",
   "author": {
@@ -9,6 +9,6 @@
   },
   "hideInEditor": true,
   "dependencies": {
- 	 "com.unity.addressables": "2.4.4"
+    "com.unity.addressables": "2.4.4"
   }
 }

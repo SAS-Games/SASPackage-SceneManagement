@@ -11,7 +11,8 @@ public class SceneGroupLoader : MonoBehaviour
     [SerializeField] private bool m_LoadOptionalScenes = false;
     [SerializeField] private bool m_LoadOnStart = false;
 
-    [Tooltip("Before unloading the Current Scene Group, Set an active scene.")] [SerializeField]
+    [Tooltip("Before unloading the Current Scene Group, Set an active scene.")]
+    [SerializeField]
     private string m_SetActiveScene = "Persistent";
 
     [SerializeField] private GameObject m_LoadingScreen;
@@ -40,6 +41,8 @@ public class SceneGroupLoader : MonoBehaviour
     private async Task LoadSceneGroup()
     {
         _loadingScreen?.SetActive(true);
+        if (string.IsNullOrEmpty(m_SceneGroupName))
+            m_SceneGroupName = _sceneLoader.SceneGroupModel.ActiveSceneGroup.Name;
 
         if (!string.IsNullOrEmpty(m_SetActiveScene))
         {
@@ -49,11 +52,11 @@ public class SceneGroupLoader : MonoBehaviour
                 SceneUtility.MoveGameObjectToScene(gameObject, scene);
                 SceneUtility.SetActiveScene(m_SetActiveScene);
             }
-            else
-            {
-                 var scene = SceneUtility.GetScene("Bootstrapper");
-                 SceneUtility.MoveGameObjectToScene(gameObject, scene);
-            }
+        }
+        else
+        {
+            var scene = SceneUtility.GetScene("Bootstrapper");
+            SceneUtility.MoveGameObjectToScene(gameObject, scene);
         }
 
         await _sceneLoader.LoadSceneGroup(m_SceneGroupName, !m_LoadOptionalScenes);

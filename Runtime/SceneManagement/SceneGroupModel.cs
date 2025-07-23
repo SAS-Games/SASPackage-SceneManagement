@@ -20,13 +20,12 @@ namespace SAS.SceneManagement
         public event Action<string> OnSceneUnloaded = delegate { };
 
         private readonly AsyncOperationHandleGroup _handleGroup = new AsyncOperationHandleGroup(10);
-
-        private SceneGroup _activeSceneGroup;
+        public SceneGroup ActiveSceneGroup { get; private set; }
 
         internal async Task LoadScenes(SceneGroup group, IProgress<float> progress = null, bool reloadDupScenes = false,
             bool ignoreOptional = false)
         {
-            _activeSceneGroup = group;
+            ActiveSceneGroup = group;
             EventBus<SceneGroupLoadStartEvent>.Raise(new SceneGroupLoadStartEvent { sceneGroup = group });
             var loadedScenes = new HashSet<string>();
 
@@ -72,7 +71,7 @@ namespace SAS.SceneManagement
                 Debug.Log($"current progress: {(operationGroup.Progress + _handleGroup.Progress) / 2}", TAG);
                 progress?.Report((operationGroup.Progress + _handleGroup.Progress) / 2);
                 await Task.Delay(100);
-                Debug.Log($"Scene Group: {_activeSceneGroup.Name} is loaded");
+                Debug.Log($"Scene Group: {ActiveSceneGroup.Name} is loaded");
             }
 
             SetActiveScene(group);
@@ -81,13 +80,13 @@ namespace SAS.SceneManagement
 
         internal async Task LoadSceneAdditively(string sceneName, IProgress<float> progress = null)
         {
-            if (_activeSceneGroup == null)
+            if (ActiveSceneGroup == null)
             {
                 Debug.LogWarning("No active scene group set. Cannot load scene.");
                 return;
             }
 
-            var sceneData = _activeSceneGroup.Scenes.FirstOrDefault(scene => scene.Name == sceneName);
+            var sceneData = ActiveSceneGroup.Scenes.FirstOrDefault(scene => scene.Name == sceneName);
             if (sceneData == null)
             {
                 Debug.LogError($"Scene {sceneName} not found in the active scene group.");
@@ -195,7 +194,7 @@ namespace SAS.SceneManagement
             }
 
             // Check if the scene exists in the active scene group
-            var sceneData = _activeSceneGroup?.Scenes.FirstOrDefault(scene => scene.Name == sceneName);
+            var sceneData = ActiveSceneGroup?.Scenes.FirstOrDefault(scene => scene.Name == sceneName);
             if (sceneData == null)
             {
                 Debug.LogWarning($"Scene {sceneName} not found in the active scene group.");
