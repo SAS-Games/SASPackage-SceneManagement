@@ -1,8 +1,6 @@
-using System.Threading.Tasks;
 using SAS.SceneManagement;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 public class SceneGroupLoader : MonoBehaviour
 {
@@ -11,12 +9,9 @@ public class SceneGroupLoader : MonoBehaviour
     [SerializeField] private bool m_LoadOptionalScenes = false;
     [SerializeField] private bool m_LoadOnStart = false;
 
-    [Tooltip("Before unloading the Current Scene Group, Set an active scene.")]
-    [SerializeField]
+    [Tooltip("Before unloading the Current Scene Group, Set an active scene.")] [SerializeField]
     private string m_SetActiveScene = "Persistent";
-
     [SerializeField] private GameObject m_LoadingScreen;
-
     private ILoadingScreen _loadingScreen;
 
     private async void Start()
@@ -26,41 +21,15 @@ public class SceneGroupLoader : MonoBehaviour
         {
             _loadingScreen = m_LoadingScreen.GetComponentInChildren<ILoadingScreen>();
             if (_loadingScreen != null)
-                _loadingScreen.OnFadeOutComplete += () => GameObject.Destroy(gameObject);
+                _loadingScreen.OnFadeOutComplete += () => Destroy(gameObject);
         }
 
         if (m_LoadOnStart)
-            await LoadSceneGroup();
+            await _sceneLoader.LoadSceneGroupAsync(m_SceneGroupName, m_LoadOptionalScenes, m_SetActiveScene, m_LoadingScreen);
     }
 
     public void Load()
     {
-        _ = LoadSceneGroup();
-    }
-
-    private async Task LoadSceneGroup()
-    {
-        _loadingScreen?.SetActive(true);
-        if (string.IsNullOrEmpty(m_SceneGroupName))
-            m_SceneGroupName = _sceneLoader.SceneGroupModel.ActiveSceneGroup.Name;
-
-        if (!string.IsNullOrEmpty(m_SetActiveScene))
-        {
-            var scene = SceneUtility.GetScene(m_SetActiveScene);
-            if (scene.isLoaded)
-            {
-                SceneUtility.MoveGameObjectToScene(gameObject, scene);
-                SceneUtility.SetActiveScene(m_SetActiveScene);
-            }
-        }
-        else
-        {
-            var scene = SceneUtility.GetScene("Bootstrapper");
-            SceneUtility.MoveGameObjectToScene(gameObject, scene);
-        }
-
-        await _sceneLoader.LoadSceneGroup(m_SceneGroupName, !m_LoadOptionalScenes);
-        Debug.Log($"Scene Group: {m_SceneGroupName} is loaded. Hide loading screen");
-        _loadingScreen?.SetActive(false);
+        _ = _sceneLoader.LoadSceneGroupAsync(m_SceneGroupName, m_LoadOptionalScenes, m_SetActiveScene, m_LoadingScreen);
     }
 }
