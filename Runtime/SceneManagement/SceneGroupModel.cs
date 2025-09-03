@@ -38,8 +38,9 @@ namespace SAS.SceneManagement
 
             var scenesToLoad = group.Scenes.Where(scene =>
                 (!reloadDupScenes && loadedScenes.Contains(scene.Name)) == false &&
-                (!ignoreOptional || !scene.IsOptinal)).ToList();
-
+                (!ignoreOptional || !scene.IsOptional)).ToList();
+            var subScenesToLoad = group.GetAlwaysLoadedStreamingScenes().ToList();
+            scenesToLoad.AddRange(subScenesToLoad);
             if (scenesToLoad.Count == 0)
             {
                 Debug.LogWarning("No scenes to load in the group.");
