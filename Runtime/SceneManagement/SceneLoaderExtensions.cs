@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SAS.SceneManagement
 {
@@ -16,12 +17,8 @@ namespace SAS.SceneManagement
         /// Loads a scene group with optional loading screen and moves the given GameObject
         /// to the target active scene before unloading the current group.
         /// </summary>
-        public static async Task LoadSceneGroupAsync(
-            this ISceneLoader sceneLoader,
-            string sceneGroupName,
-            bool loadOptionalScenes = false,
-            string setActiveScene = "Persistent",
-            GameObject loadingScreen = null)
+        public static async Task LoadSceneGroupAsync(this ISceneLoader sceneLoader, string sceneGroupName,
+            bool loadOptionalScenes = false, string setActiveScene = "Persistent", ILoadingScreen loadingScreen = null)
         {
             if (loadingScreen != null)
                 loadingScreen.SetActive(true);
@@ -30,21 +27,11 @@ namespace SAS.SceneManagement
 
             if (string.IsNullOrEmpty(sceneGroupName))
                 sceneGroupName = sceneLoader.SceneGroupModel.ActiveSceneGroup.Name;
-
             if (!string.IsNullOrEmpty(setActiveScene))
             {
                 var scene = SceneUtility.GetScene(setActiveScene);
                 if (scene.isLoaded && loadingScreen != null)
-                {
-                    SceneUtility.MoveGameObjectToScene(loadingScreen.transform.root.gameObject, scene);
                     SceneUtility.SetActiveScene(setActiveScene);
-                }
-            }
-            else
-            {
-                var scene = SceneUtility.GetScene("Bootstrapper");
-                if (loadingScreen != null)
-                    SceneUtility.MoveGameObjectToScene(loadingScreen.transform.root.gameObject, scene);
             }
 
             await sceneLoader.LoadSceneGroup(sceneGroupName, !loadOptionalScenes);

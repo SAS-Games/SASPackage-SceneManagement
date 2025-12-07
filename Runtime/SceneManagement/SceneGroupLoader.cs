@@ -1,35 +1,45 @@
 using SAS.SceneManagement;
+using SAS.Utilities;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
 
-public class SceneGroupLoader : MonoBehaviour
+public class SceneGroupLoader : Singleton<SceneGroupLoader>
 {
     [Inject] private ISceneLoader _sceneLoader;
-    [SerializeField] private string m_SceneGroupName;
-    [SerializeField] private bool m_LoadOptionalScenes = false;
-    [SerializeField] private bool m_LoadOnStart = false;
-
-    [Tooltip("Before unloading the Current Scene Group, Set an active scene.")] [SerializeField]
-    private string m_SetActiveScene = "Persistent";
-    [SerializeField] private GameObject m_LoadingScreen;
-    private ILoadingScreen _loadingScreen;
-
-    private async void Start()
+    protected override void Awake()
     {
-        this.InjectFieldBindings();
-        if (m_LoadingScreen)
-        {
-            _loadingScreen = m_LoadingScreen.GetComponentInChildren<ILoadingScreen>();
-            if (_loadingScreen != null)
-                _loadingScreen.OnFadeOutComplete += () => Destroy(gameObject);
-        }
-
-        if (m_LoadOnStart)
-            await _sceneLoader.LoadSceneGroupAsync(m_SceneGroupName, m_LoadOptionalScenes, m_SetActiveScene, m_LoadingScreen);
+        this.Initialize();
+        base.Awake();
     }
 
-    public void Load()
+    public void Load(string sceneGroupName, bool loadOptionalScenes = false, string setActiveScene = "Persistent", ILoadingScreen loadingScreen = null)
     {
-        _ = _sceneLoader.LoadSceneGroupAsync(m_SceneGroupName, m_LoadOptionalScenes, m_SetActiveScene, m_LoadingScreen);
+        if (loadingScreen != null)
+        {
+            var screenMB = (loadingScreen as MonoBehaviour);
+            var screenGO = screenMB.gameObject;
+
+            Transform originalParent = screenGO.transform.parent;
+
+            MoveToDontDestroy(screenGO);
+
+            loadingScreen.OnFadeOutComplete += () =>
+            {
+                if (originalParent != null)
+                    screenGO.transform.SetParent(originalParent, worldPositionStays: false);
+                else if (screenGO != null)
+                    Destroy(screenGO);
+            };
+        }
+
+        _ = _sceneLoader.LoadSceneGroupAsync(sceneGroupName, loadOptionalScenes, setActiveScene, loadingScreen);
+    }
+
+    private void MoveToDontDestroy(GameObject obj)
+    {
+        if (obj == null)
+            return;
+        obj.transform.SetParent(null);
+        DontDestroyOnLoad(obj);
     }
 }

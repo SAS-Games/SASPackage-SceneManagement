@@ -34,7 +34,6 @@ public class UILoadingScreen : MonoBehaviour, ILoadingScreen
 
         m_LoadingBar.fillAmount = 0f;
         gameObject.SetActive(active);
-
     }
 
     public void Update()
