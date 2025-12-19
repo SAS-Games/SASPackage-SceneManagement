@@ -27,7 +27,7 @@ public class SceneGroupLoadConfig : MonoBehaviour
     public void Load()
     {
         ILoadingScreen loadingScreen = null;
-        if (_loadingScreen != null)
+        if (m_LoadingScreen != null)
             loadingScreen = m_LoadingScreen.GetComponentInChildren<ILoadingScreen>();
         SceneGroupLoader.Instance.Load(m_SceneGroupName, m_LoadOptionalScenes, m_SetActiveScene, loadingScreen);
     }
