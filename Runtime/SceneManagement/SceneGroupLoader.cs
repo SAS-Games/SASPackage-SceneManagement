@@ -1,6 +1,6 @@
 using SAS.SceneManagement;
-using SAS.Utilities;
-using SAS.Utilities.TagSystem;
+using SAS.Core;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 public class SceneGroupLoader : Singleton<SceneGroupLoader>

@@ -1,6 +1,6 @@
 ﻿using Eflatun.SceneReference;
 using SAS.SceneManagement;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
