@@ -47,7 +47,7 @@ namespace SAS.SceneManagement
 
         public async Task LoadSceneGroup(string groupName, bool ignoreOptional = false)
         {
-            Debug.Log($"LoadSceneGroup GroupName: {groupName} IgnoreOptional: {ignoreOptional}", SceneGroupModel.TAG);
+            Debug.Log($"LoadSceneGroup GroupName: {groupName} IgnoreOptional: {ignoreOptional}");
             int index = Array.FindIndex(m_SceneGroupsConfig.SceneGroups, sceneGroup => sceneGroup.Name == groupName);
             if (index == -1)
             {

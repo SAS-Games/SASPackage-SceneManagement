@@ -13,7 +13,6 @@ namespace SAS.SceneManagement
 {
     public class SceneGroupModel
     {
-        public const string TAG = "SceneManagement";
         public const string BootstrapperScene = "Bootstrapper";
         public const string PersistentScene = "Persistent";
         public event Action<string> OnSceneLoaded = delegate { };
@@ -68,7 +67,7 @@ namespace SAS.SceneManagement
 
             while (!operationGroup.IsDone || !_handleGroup.IsDone)
             {
-                Debug.Log($"current progress: {(operationGroup.Progress + _handleGroup.Progress) / 2}", TAG);
+                Debug.Log($"current progress: {(operationGroup.Progress + _handleGroup.Progress) / 2}");
                 progress?.Report((operationGroup.Progress + _handleGroup.Progress) / 2);
                 await Task.Delay(100);
                 Debug.Log($"Scene Group: {ActiveSceneGroup.Name} is loaded");
